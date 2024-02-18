@@ -1,0 +1,1396 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Es. 1 (introduzione a Python, le basi)}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \section{LE BASI DI PYTHON - IL MIO PRIMO
+PROGRAMMA}\label{le-basi-di-python---il-mio-primo-programma}
+
+    Questo breve codice utilizza il comando print per mostrare il messaggio
+``Hello, World!'' a schermo. In Python, il print è il comando utilizzato
+per visualizzare testo o risultati durante l'esecuzione di un programma.
+Nel caso specifico, il programma stampa semplicemente un saluto di base.
+L'Hello World è il programma esempio ``base'' di un qualsiasi linguaggio
+di programmazione; infatti, come in questo caso, è il primo codice che
+si apprende.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere il comando print}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hello, World!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}il comando print stampa un testo indicato nelle virgolette, quello spazio è inteso come una stringa di testo}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Hello, World!
+    \end{Verbatim}
+
+    Questo codice utilizza il comando print per mostrare il contenuto della
+variabile nome. Il programma assegna la stringa ``Matteo'' alla
+variabile nome, la stringa non è altro che una frase di testo normale in
+linguaggio ``umano'' come è per l'appunto la parola ``Matteo'' che è una
+parola del linguaggio ``umano'' che viene assegnata come dato ad una
+variabile ed è una stringa. Successivamente, il programma utilizza il
+comando print per visualizzare il messaggio ``Il nome esempio è:''
+seguito dal contenuto della variabile nome. Questo significa che verrà
+stampato a schermo ``Il nome esempio è: Matteo'', ovviamente la parola
+``Matteo'' è a capo perchè i due print sono in due righe diverse nel
+codice e questo fa sì che il risultato finale venga ``printato'' in due
+righe separate. In sintesi, il comando print può essere utilizzato anche
+per visualizzare il contenuto di variabili, come il nome nella variabile
+``nome'', o di qualsiasi altro dato.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere il comando print e comprendere come definire una variabile con una stringa}
+\PY{n}{nome}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Matteo}\PY{l+s+s2}{\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il nome esempio è:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{nome}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Il nome esempio è:
+Matteo
+    \end{Verbatim}
+
+    \section{LE VARIABILI E L'INPUT
+UTENTE}\label{le-variabili-e-linput-utente}
+
+    Questo codice utilizza il comando input per acquisire dati dall'utente.
+Ecco una breve spiegazione di come funziona: Il programma per prima cosa
+chiede all'utente di inserire il proprio nome utilizzando il comando
+input, l'input viene quindi memorizzato come un dato nella variabile
+nome. Successivamente, viene richiesto all'utente di inserire il cognome
+utilizzando l'altro input, quest'ultimo a quel punto viene sempre
+memorizzato come un dato nella variabile cognome. Infine, il programma
+stampa un messaggio di benvenuto utilizzando il comando
+print(``Benvenuto su Jupyter Notebook'', nome, cognome), dove nome e
+cognome sono i dati inseriti dall'utente poichè sono le variabili e
+quindi il programma stamperà direttamente i loro valori, cioè i dati che
+aveva immesso prima l'utente nell'input. Questo codice è un esempio
+semplice ma utile di come interagire con l'utente attraverso l'input e
+di come salvare i dati corretti nelle variabili.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere il comando input}
+\PY{n}{nome}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il tuo nome: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}l\PYZsq{}input \PYZdq{}prende\PYZdq{} un dato dall\PYZsq{}utente e lo salva temporaneamente nella RAM (Random Access Memory)}
+\PY{n}{cognome}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il tuo cognome: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{c+c1}{\PYZsh{}le variabili si possono indicare come si vogliono però è meglio, per se stessi e per gli altri, che visualizzeranno il codice usare dei nomi sensati per ogni occasione}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Benvenuto su Jupyter Notebook}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{nome}\PY{p}{,}\PY{n}{cognome}\PY{p}{)}\PY{c+c1}{\PYZsh{}dentro il print ci sono due input dettati dall\PYZsq{}utente che specificano i dati}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Inserisci il tuo nome: Matteo
+Inserisci il tuo cognome: Magrino
+Benvenuto su Jupyter Notebook Matteo Magrino
+    \end{Verbatim}
+
+    Il codice qui sotto chiede all'utente di inserire il nome completo della
+via e l'indirizzo di casa e successivamente stampa il messaggio
+confermando la via inserita. Questo codice è identico strutturalmente a
+quello di sopra perchè chiede sempre un informazione all'utente via
+input, solo che questo è un esempio diverso
+
+CURIOSITÀ: la via 20 W 34th St., New York, NY 10001, Stati Uniti è
+quella dove risiede una delle due facciate laterali lunghe del
+famossisimo grattacielo ``Empire State Building''. Link alla pagina di
+Google Maps: https://bit.ly/googlemapsempirestatebuilding
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{indirizzoviadicasa}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il nome completo della via, nonchè l}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{indirizzo, di casa tua: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Hai inserito la via:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{indirizzoviadicasa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Inserisci il nome completo della via, nonchè l'indirizzo, di casa tua: 20 W 34th
+St., New York, NY 10001, Stati Uniti
+Hai inserito la via: 20 W 34th St., New York, NY 10001, Stati Uniti
+    \end{Verbatim}
+
+    \section{CONCATENAZIONI E MOLTIPLICAZIONI CON LE STRINGHE DI
+TESTO}\label{concatenazioni-e-moltiplicazioni-con-le-stringhe-di-testo}
+
+    Il codice ``Matteo'' + ``Magrino'' esegue la concatenazione di due
+stringhe, ``Matteo'' e ``Magrino'', producendo così una nuova stringa
+risultante dalla fusione delle due. La concatenazione delle stringhe è
+un'operazione molto comune in programmazione, utile per unire più
+stringhe in una sola e fare così un output unico.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Matteo}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Magrino}\PY{l+s+s2}{\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'MatteoMagrino'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Il codice qui sotto è identico a quello precedente ma non è presente il
+simbolo ``+'', infatti la concatenazione delle stringhe si può creare
+anche senza il simbolo +, questo perchè in Python se le due stringhe si
+trovano una accanto all'altra senza un operatore tra di esse, vengono
+automaticamente concatenate. Questo è noto come ``concatenazione
+implicita delle stringhe''.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Matteo}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Magrino}\PY{l+s+s2}{\PYZdq{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'MatteoMagrino'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    In Python, moltiplicare una stringa per un numero intero produce una
+nuova stringa che consiste nella stringa originale ripetuta per un certo
+numero di volte. Quindi, l'espressione ``Matteo'' * 30 restituirà come
+output una stringa contenente il valore della stringa ``Matteo''
+ripetuto 30 volte. Questo approccio è utile quando si desidera creare
+rapidamente una stringa ripetuta più volte senza doverla scrivere
+esplicitamente più volte nel codice, rendendo il codice più conciso,
+efficiente e veloce da scrivere. Ad esempio, se volessimo creare una
+stringa che contenga il nome ``Matteo'' ripetuto 30 volte, sarebbe più
+efficiente e conciso scrivere ``Matteo'' * 30 piuttosto che scrivere
+manualmente ``Matteo'' 30 volte, inoltre il codice occuperebbe più
+memoria. Questo approccio è particolarmente utile quando si desidera
+creare stringhe di grandi dimensioni o ripetere un certo pattern
+(ripetività) all'interno di una stringa.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Matteo}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{30}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'MatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoM
+atteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMat
+teoMatteoMatteoMatteo'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Questo codice è un riassunto di quelli precedenti riguardanti le
+stringhe di testo. L'espressione ``Matteo'' * 20 + ``Magrino'' * 50
+combina due operazioni: la moltiplicazione di una stringa per un numero
+intero e la concatenazione di stringhe. Nel dettaglio, ``Matteo'' * 20
+crea una nuova stringa in cui la parola ``Matteo'' viene ripetuta per 20
+volte, mentre ``Magrino'' * 50 produce una stringa in cui la parola
+``Magrino'' viene ripetuto per 50 volte. Infine, entrambe le stringhe
+risultanti vengono concatenate insieme utilizzando l'operatore +,
+producendo come output finale una nuova stringa che inizia con
+``Matteo'' ripetuto 20 volte seguito poi da ``Magrino'' ripetuto 50
+volte. In sintesi, l'output di questa espressione sarà una lunga stringa
+che contiene la ripetizione di ``Matteo'' per 20 volte seguita dalla
+ripetizione di ``Magrino'' per 50 volte. Un output a dir poco
+particolare\ldots{}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Matteo}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{20}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Magrino}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{50}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'MatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoMatteoM
+atteoMatteoMatteoMatteoMatteoMatteoMatteoMagrinoMagrinoMagrinoMagrinoMagrinoMagr
+inoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrino
+MagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMag
+rinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrin
+oMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrinoMagrino'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \section{LA CONCATENAZIONE DI
+VARIABILI}\label{la-concatenazione-di-variabili}
+
+    In questo codice viene eseguita la concatenazione di variabili per
+creare una stringa più complessa e con tutte le informazioni necessarie
+all'utente. La concatenazione di variabili consiste nell'unire più
+variabili, in questo caso definite come stringhe di testo, per formare
+un'unica nuova stringa finale. Nel caso specifico, le variabili
+``nome'', ``cognome'' ed ``età'' contengono rispettivamente il nome, il
+cognome e l'età di una persona esempio. Queste variabili vengono
+concatenate insieme utilizzando l'operatore di concatenazione ``+'' e
+del testo aggiuntivo per formare un messaggio più completo e più facile
+alla lettura da parte dell'utente.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nome}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Matteo}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{cognome}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Magrino}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{età}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{15}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{messaggiodastampare}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao a tutti mi chiamo }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{nome}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{cognome}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{, ho }\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n}{età}\PY{o}{+}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ anni e sono un programmatore in erba di Python e altri linguaggi di programmazione}\PY{l+s+s2}{\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{messaggiodastampare}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao a tutti mi chiamo Matteo Magrino, ho 15 anni e sono un programmatore in
+erba di Python e altri linguaggi di programmazione
+    \end{Verbatim}
+
+    \section{IL CICLO FOR}\label{il-ciclo-for}
+
+    Il programma sottostante acquisisce il nome e il cognome dell'utente
+come input, così come il numero di volte che l'utente desidera ripetere
+un messaggio gentile. Utilizza poi un ciclo for per iterare attraverso
+il numero di volte specificato dall'utente, gestito dal contatore ``i''
+(che sta per iteratore ma si può chiamare come si vuole). In ogni
+iterazione del ciclo, il programma stampa un messaggio gentile che
+include il nome e il cognome inseriti dall'utente. La parte chiave del
+programma è ovviamente il ciclo for, che utilizza un contatore o
+iteratore (i due nomi sono sinonimi) ``i'' per iterare attraverso un
+numero di volte pari a quello specificato dalla variabile
+numeroripetizionimessaggio. In ogni iterazione, il programma stampa un
+messaggio gentile che include il nome e il cognome inseriti dall'utente.
+Il contatore ``i'' è un vero e proprio iteratore, che tiene traccia
+dello stato attuale del ciclo e consente di eseguire azioni specifiche
+per ciascuna iterazione. La parte del range(numeroripetizionimessaggio)
+fornisce una sequenza di numeri da 0 a numeroripetizionimessaggio-1,
+definendo così il numero di iterazioni.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere il ciclo for}
+\PY{n}{nome}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il tuo nome: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{cognome}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il tuo cognome: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numeroripetizionimessaggio}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il numero di volte che desideri che un messaggio gentile si ripeta: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}\PY{c+c1}{\PYZsh{}int è l\PYZsq{}acronimo di integer, cioè di intero e vuole dire che la variabile in questo caso è di tipo intero e può \PYZdq{}leggere\PYZdq{} solo numeri interi (cioè tutti quelli senza virgola) o altro}
+\PY{c+c1}{\PYZsh{}For è un contatore o iteratore perchè tiene traccia dello stato attuale del ciclo (per spiegazione più dettagliata su come funziona leggere il riquadro sopra)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{numeroripetizionimessaggio}\PY{p}{)}\PY{p}{:}\PY{c+c1}{\PYZsh{}il numero di volte che viene ripetuto questo messaggio dipende dall\PYZsq{}input messo precedentemente dall\PYZsq{}utente}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Che bel nome e cognome che hai}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{nome}\PY{p}{,}\PY{n}{cognome}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{è davvero molto bello}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Inserisci il tuo nome: Matteo
+Inserisci il tuo cognome: Magrino
+Inserisci il numero di volte che desideri che un messaggio gentile si ripeta: 12
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+Che bel nome e cognome che hai Matteo Magrino è davvero molto bello
+    \end{Verbatim}
+
+    \section{ESEMPI DI CALCOLATRICE}\label{esempi-di-calcolatrice}
+
+    Il codice inizia con un messaggio di benvenuto, invitando l'utente a
+utilizzare la calcolatrice per effettuare addizioni. Successivamente,
+attraverso il comando input, si richiede all'utente di inserire due
+numeri, che vengono poi convertiti in formato float per consentire la
+lettura da parte del programma e l'immisione di numeri decimali da parte
+dell'utente. L'operazione di addizione tra i due numeri viene eseguita
+utilizzando l'operatore + (più), il risultato viene memorizzato nella
+variabile addizione, e infine, il risultato viene visualizzato con un
+messaggio appropriato. \textbf{N.B.: la virgola nei numeri decimali in
+Python quando vengono immessi come input, come nella maggior parte dei
+linguaggi, DEVE sempre essere inserita con un punto e non con una
+virgola questo perchè per convenzione si è scelto di assegnare il punto
+come separatore decimale}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere come eseguire le addizioni}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le addizioni!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numero1}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il primo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}\PY{c+c1}{\PYZsh{}float indica che la variabile può leggere i numeri reali, cioè tutti quei numeri inclusi quelli con la virgola o senza}
+\PY{n}{numero2}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il secondo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{addizione}\PY{o}{=}\PY{n}{numero1}\PY{o}{+}\PY{n}{numero2}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La somma dei due numeri è pari a:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n+nb}{float}\PY{p}{(}\PY{n}{addizione}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le addizioni!
+Inserisci il primo numero: 5.7
+Inserisci il secondo numero: 3.2
+La somma dei due numeri è pari a: 8.9
+    \end{Verbatim}
+
+    Il codice qui sotto svolge l'operazione di sottrazione tra due numeri
+(sempre float) inseriti dall'utente. Funziona allo stesso modo ed
+infatti ha una identica struttura tranne per il fatto che c'è il simbolo
+- (meno) che fa eseguire corretamente l'operazione in questione.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere come eseguire le sottrazioni}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le sottrazioni!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numero1}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il primo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{numero2}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il secondo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{sottrazione}\PY{o}{=}\PY{n}{numero1}\PY{o}{\PYZhy{}}\PY{n}{numero2}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La sottrazione dei due numeri è pari a:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n+nb}{float}\PY{p}{(}\PY{n}{sottrazione}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le sottrazioni!
+Inserisci il primo numero: 3.4
+Inserisci il secondo numero: 8.2
+La sottrazione dei due numeri è pari a: -4.799999999999999
+    \end{Verbatim}
+
+    Il codice qui sotto svolge l'operazione di moltiplicazione tra due
+numeri (sempre float) inseriti dall'utente. Funziona allo stesso modo ed
+infatti ha una identica struttura tranne per il fatto che c'è il simbolo
+* (asterisco) che in programmazione, non solo in Python ma anche nella
+maggiorparte dei linguaggi, vuole significare il simbolo per (×) che fa
+eseguire corretamente l'operazione in questione.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere come eseguire le moltiplicazioni}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le moltiplicazioni!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numero1}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il primo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{numero2}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il secondo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{moltiplicazione}\PY{o}{=}\PY{n}{numero1}\PY{o}{*}\PY{n}{numero2}\PY{c+c1}{\PYZsh{}il simbolo * vuol dire moltiplicazione}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La moltiplicazione dei due numeri è pari a:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n+nb}{float}\PY{p}{(}\PY{n}{moltiplicazione}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le
+moltiplicazioni!
+Inserisci il primo numero: 3.9
+Inserisci il secondo numero: 9.1
+La moltiplicazione dei due numeri è pari a: 35.489999999999995
+    \end{Verbatim}
+
+    Il codice qui sotto svolge l'operazione di divisione tra due numeri
+(sempre float) inseriti dall'utente. Funziona allo stesso modo ed
+infatti ha una identica struttura tranne per il fatto che c'è il simbolo
+/ (barra o slash in inglese) che in programmazione, non solo in Python
+ma anche nella maggiorparte dei linguaggi, vuole significare il simbolo
+della divisione (cioè il diviso) (: oppure il ÷) che fa eseguire
+corretamente l'operazione in questione. Anche se si può dire che in
+algebra o semplicemente in matematica il simbolo / viene usato per
+scrivere le frazioni, che sono comunque delle divisoni a tutti gli
+effetti.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}comprendere come eseguire le divisioni}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le divisioni!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numero1}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il primo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{numero2}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il secondo numero: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{divisione}\PY{o}{=}\PY{n}{numero1}\PY{o}{/}\PY{n}{numero2}\PY{c+c1}{\PYZsh{}il simbolo / vuol dire divisione}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La divisione dei due numeri è pari a:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n+nb}{float}\PY{p}{(}\PY{n}{divisione}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le divisioni!
+Inserisci il primo numero: 5.7
+Inserisci il secondo numero: 2.6
+La divisione dei due numeri è pari a: 2.1923076923076925
+    \end{Verbatim}
+
+    Il codice qui sotto svolge l'operazione di potenza tra due numeri (la
+base come float e l'esponente come int) inseriti dall'utente. Funziona
+allo stesso modo ed infatti ha una identica struttura tranne per il
+fatto che c'è il simbolo ** (doppio asterisco, che letteralmente
+vorrebbe dire doppio ×) che in programmazione, non solo in Python ma
+anche nella maggiorparte dei linguaggi, vuole significare il simbolo
+della potenza (x\^{}y, come il ** se fosse il \^{}) che fa eseguire
+corretamente l'operazione in questione.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere come eseguire le potenze}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questa calcolatrice puoi calcolare il valore di una potenza!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{base}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci la base della potenza: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}\PY{c+c1}{\PYZsh{}la base è un float, questo perchè si può fare la potenza di un numero decimale}
+\PY{n}{esponente}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci l}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{esponente della potenza: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}\PY{c+c1}{\PYZsh{}l\PYZsq{}esponente è un int invece, questo perchè per fare un esempio più facile è meglio usare l\PYZsq{}int in modo che il risultato sia più semplice}
+\PY{n}{potenza}\PY{o}{=}\PY{n}{base}\PY{o}{*}\PY{o}{*}\PY{n}{esponente}\PY{c+c1}{\PYZsh{}il simbolo ** vuol dire potenza}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il valore della potenza è pari a:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n+nb}{float}\PY{p}{(}\PY{n}{potenza}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questa calcolatrice puoi calcolare il valore di una potenza!
+Inserisci la base della potenza: 5.7
+Inserisci l'esponente della potenza: 3
+Il valore della potenza è pari a: 185.193
+    \end{Verbatim}
+
+    Questo codice riassume tutti i precedenti in un'unico codice. Il codice
+infatti rappresenta una calcolatrice che consente all'utente di eseguire
+operazioni di addizione, sottrazione, moltiplicazione, divisione e
+calcolo delle potenze. Questa versatilità è ottenuta attraverso
+l'utilizzo di condizioni (che in ordine gerarchico sono: if, elif ed
+else) che dirigono il flusso del programma in base all'operazione scelta
+dall'utente. Inizialmente, il programma richiede all'utente di inserire
+il tipo di operazione che desidera effettuare sottoforma di segno,
+nonché poi i due numeri coinvolti. L'input dell'utente viene
+successivamente convertito in numeri in virgola decimale (i cosidetti
+float) per consentire l'elaborazione di numeri decimali. La parte
+principale del codice è pero costituita dalle condizioni if, elif ed
+else (in scala gerarchica). Ciascuna condizione verifica se l'operatore
+scritto nell'input corrisponde a uno specifico caso dichiarato in
+precedenza (addizione, sottrazione, moltiplicazione, divisione, potenza)
+e, in caso affermativo, esegue il blocco di codice associato a quella
+condizione, cioè il blocco di codice scritto sotto alla condizione
+finchè non incomincia una nuova condizione perchè poi a quel punto il
+codice salta quel pezzo delle condizioni e va alla parte dopo. Se
+l'operazione inserita non corrisponde a nessun caso noto, il blocco
+nell'else fornisce un messaggio di errore. Inoltre l'else è sempre
+l'ultima condizione mentre la prima è sempre l'if e quelle in mezzo sono
+sempre l'elif. Questo approccio rende il codice estremamente flessibile,
+consentendo allo sviluppatore di eseguire diverse operazioni senza dover
+scrivere del codice separato per ciascuna di esse, utilizzando per
+l'appunto le condizioni. Le condizioni giocano un ruolo fondamentale
+nell'indirizzare il flusso del programma in modo dinamico, in base alle
+scelte dell'utente, offrendo così in questo caso una calcolatrice
+completa e versatile.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Esempio di calcolatrice finale con tutte cinque le operazioni}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le addizioni, sottrazioni, moltiplicazioni e divisioni, inoltre puoi anche calcolare il valore di una potenza!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{operazione}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Adesso scegli l}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{operazione che fa al caso tuo attraverso il correlato simbolo (+, \PYZhy{}, *, /, **): }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numero1}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il primo numero o la base della potenza: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{numero2}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il secondo numero o l}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{esponente della potenza: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{k}{if} \PY{n}{operazione}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{+}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{c+c1}{\PYZsh{}l\PYZsq{}if indica il primo caso possibile}
+    \PY{n}{risultato}\PY{o}{=}\PY{n}{numero1}\PY{o}{+}\PY{n}{numero2}
+\PY{k}{elif} \PY{n}{operazione}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{c+c1}{\PYZsh{}\PYZsh{}l\PYZsq{}elif è l\PYZsq{}ibrido tra if \PYZam{} else e indica i casi di mezzo}
+    \PY{n}{risultato}\PY{o}{=}\PY{n}{numero1}\PY{o}{\PYZhy{}}\PY{n}{numero2}
+\PY{k}{elif} \PY{n}{operazione}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{*}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+    \PY{n}{risultato}\PY{o}{=}\PY{n}{numero1}\PY{o}{*}\PY{n}{numero2}
+\PY{k}{elif} \PY{n}{operazione}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{/}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+    \PY{n}{risultato}\PY{o}{=}\PY{n}{numero1}\PY{o}{/}\PY{n}{numero2}
+\PY{k}{elif} \PY{n}{operazione}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{**}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+    \PY{n}{risultato}\PY{o}{=}\PY{n}{numero1}\PY{o}{*}\PY{o}{*}\PY{n}{numero2}
+\PY{k}{else}\PY{p}{:}\PY{c+c1}{\PYZsh{}l\PYZsq{}else indica l\PYZsq{}ultimo caso possibile}
+    \PY{n}{risultato}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{operatore non riconosciuto. Scegli uno dei seguenti operatori riavviando prima il programma: +, \PYZhy{}, *, /, **}\PY{l+s+s2}{\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il risultato finale del calcolo è:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{risultato}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questa calcolatrice puoi eseguire calcoli con le addizioni,
+sottrazioni, moltiplicazioni e divisioni, inoltre puoi anche calcolare il valore
+di una potenza!
+Adesso scegli l'operazione che fa al caso tuo attraverso il correlato simbolo
+(+, -, *, /, **): non lo so
+Inserisci il primo numero o la base della potenza: 5
+Inserisci il secondo numero o l'esponente della potenza: 5
+Il risultato finale del calcolo è: operatore non riconosciuto. Scegli uno dei
+seguenti operatori riavviando prima il programma: +, -, *, /, **
+    \end{Verbatim}
+
+    \section{IL CICLO FOR CON N}\label{il-ciclo-for-con-n}
+
+    Il programma in questione è un semplice ``generatore'' di numeri che
+parte e arriva fino a un numero desiderato dall'utente. Inizia chiedendo
+all'utente due numeri positivi: il primo (numerodaverificare) indica
+fino a quale numero si vuole generare la lista della sequenza di numeri,
+mentre il secondo (numeroiniziale) rappresenta da quale numero positivo
+si desidera iniziare la numerazione. Successivamente, attraverso un
+ciclo for, il programma itera attraverso una sequenza di numeri a
+partire da ``numeroiniziale'' fino a ``numerodaverificare'' incluso.
+Durante ogni iterazione del ciclo, il numero corrente viene stampato a
+schermo dopo una stringa esplicativa ed è così per ogni volta che si
+ripete questo ciclo. Questo processo continua fino a quando il ciclo
+raggiunge il valore scelto dall'utente della variabile
+``numerodaverificare''. Quindi alla fine si può dire che l'uso di
+range(numeroiniziale, numerodaverificare + 1) assicura che il valore
+finale ``numeroiniziale'' sia incluso nella sequenza, poiché senza il
++1, la sequenza generata terminerebbe a ``numeroiniziale'' - 1, cioè al
+numero precedente da quello scelto dall'utente, quindi escludendo il
+valore desiderato ``numerodaverificare'' dalla lista finale che viene
+stampata. In questo modo, il +1 garantisce che la numerazione vada da
+``numeroiniziale'' fino a ``numerodaverificare'' scrivendo tutti i
+numeri della lista, inclusi entrambi i ``poli'' decisi come input
+dall'utente. Questo tipo di programma è utile quando si desidera
+generare e visualizzare una sequenza ordinata di numeri in base, però,
+alle preferenze dell'utente.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere il ciclo for con n}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questo programma puoi verificare la numerazione ordinaria dei numeri dal e fino al punto che desideri}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numerodaverificare}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quindi, inserisci il numero positivo che desideri verificare: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{numeroiniziale}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Poi, inserisci da quale numero positivo desideri che la numerazione inizii: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La numerazione ordinaria dei numeri dal e fino al punto che desideri è:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{numero} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{numeroiniziale}\PY{p}{,}\PY{n}{numerodaverificare}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}\PY{c+c1}{\PYZsh{}p è un valore fisso determinato dall\PYZsq{}utente mentre +1 indica che a n verrà aggiunto il valore di 1. N.B.: la variabile numero è diversa dalle altre due infatti rappresenta ciascun numero nella numerazione ordinaria tra numeroiniziale e numerodaverificare, cioè assume successivamente ogni valore compreso tra numeroiniziale e numerodaverificare e non ce mai bisogno di inizzalizzarla in Python}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{numero}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questo programma puoi verificare la numerazione ordinaria dei
+numeri dal e fino al punto che desideri
+Quindi, inserisci il numero positivo che desideri verificare: 33
+Poi, inserisci da quale numero positivo desideri che la numerazione inizii: 12
+La numerazione ordinaria dei numeri dal e fino al punto che desideri è:
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+    \end{Verbatim}
+
+    Il programma sottostante calcola la somma cumulativa dei primi n numeri
+interi positivi chiedendo il numero desiderato all'utente come input. La
+somma cumulativa è un concetto matematico che rappresenta la somma
+progressiva di una sequenza di numeri, aggiungendo ad ogni passo il
+numero corrente all'accumulatore. In questo contesto, il programma
+calcola la somma cumulativa dei primi n numeri interi positivi, fornendo
+un risultato che riflette l'incremento graduale della somma durante
+l'iterazione. Ad esempio, se l'utente inserisce n=5, la somma cumulativa
+sarà calcolata come 1+2+3+4+5, che darà come risultato 15. Il programma
+inizia chiedendo all'utente di inserire come input un numero intero
+positivo (variabile n) di cui desidera calcolare la somma cumulativa.
+Successivamente, il programma utilizza un ciclo for per iterare
+attraverso i numeri da 1 a n inclusi e quindi dal numero 1 fino al
+numero scelto dall'utente. Durante ogni iterazione, il programma
+aggiunge il numero corrente alla variabile addizione, che funge da
+accumulatore per la somma cumulativa, finchè il processo di iterazione
+non sarà arrivato al numero scelto dall'utente. L'operatore += usato in
+questo codice ad ogni ciclo di iterazione esegue contemporaneamente
+l'addizione e la riassegnazione del risultato alla variabile addizione,
+cioè per prima cosa fa il calcolo dell'addizione che deve svolgere e poi
+riassegna il valore del risultato di quel calcolo alla variabile
+addizione e questo permette di far due azione che dovrebbero essere
+assegnate con due comandi diversi in uno singolo in modo da risparmiare
+memoria. Infine, il programma stampa il risultato, indicando la somma
+dei primi n numeri interi e sottolineando che questo valore rappresenta
+la somma cumulativa. Questo codice fornisce un'implementazione semplice
+della somma cumulativa.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere il ciclo for con n facendo la somma cumulativa}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questo programma puoi calcolare la somma cumulativa di qualsiasi numero che desideri sapere}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{n}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quindi, inserisci il numero positivo che desideri calcolare: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{addizione}\PY{o}{=}\PY{l+m+mi}{0}
+\PY{k}{for} \PY{n}{numero} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}\PY{c+c1}{\PYZsh{}1 è un valore fisso mentre +1 indica che a n verrà aggiunto il valore di 1}
+    \PY{n}{addizione}\PY{o}{+}\PY{o}{=}\PY{n}{numero}\PY{c+c1}{\PYZsh{}il simbolo += svolge due compiti in uno: fa la somma e riassegna il valore della variabile}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La somma dei primi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{numeri interi è}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{addizione}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Perciò la somma cumulativa di}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{è}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{addizione}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questo programma puoi calcolare la somma cumulativa di
+qualsiasi numero che desideri sapere
+Quindi, inserisci il numero positivo che desideri calcolare: 12
+La somma dei primi 12 numeri interi è 78
+Perciò la somma cumulativa di 12 è 78
+    \end{Verbatim}
+
+    \section{CALCOLARE LA MEDIA DI UNA LISTA DI
+NUMERI}\label{calcolare-la-media-di-una-lista-di-numeri}
+
+    Questo programma consente all'utente di calcolare la media di una lista
+di numeri scelta dall'utente stesso. La media dei numeri è ottenuta
+sommando tutti i numeri insieme e dividendo il risultato per il numero
+totale di numeri. Inizialmente, il programma chiede all'utente quanti
+numeri desidera inserire nella lista. Utilizzando poi un ciclo for, il
+programma acquisisce ogni numero specifico della lista inserito
+dall'utente e li aggiunge alla lista numeri utilizzando il metodo
+append, che per l'appunto ``appende'' ognuno dei numeri scritti
+all'utente e salvati nella variabile ``numero'' alla lista vera e
+propria del programma. Successivamente, viene calcolata la media dei
+numeri presenti nella lista utilizzando i comandi sum e len. Il comando
+sum(numeri) restituisce la somma di tutti i numeri nella lista, mentre
+len(numeri) restituisce la lunghezza della lista, cioè il numero totale
+di numeri inseriti. Dividendo la somma per la lunghezza, si ottiene così
+la media dei numeri. Infine il programma stampa la lista finale,
+fornendo così all'utente la media di tutti i numeri inseriti da lui.
+Questo codice fornisce un modo efficiente per calcolare la media di una
+lista di numeri inseriti dall'utente.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere come usare i comandi sum e len facendo la media di una lista di numeri}
+\PY{n}{numeri}\PY{o}{=}\PY{p}{[}\PY{p}{]}\PY{c+c1}{\PYZsh{}l\PYZsq{}append serve a fare una lista da poter richiamare}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questo programma puoi calcolare la media di una lista di numeri che desideri sapere}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{n}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quanti numeri desideri inserire in totale? }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{n}{numero}\PY{o}{=}\PY{n+nb}{float}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Inserisci il numero di cui desideri fare la media: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+    \PY{n}{numeri}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{numero}\PY{p}{)}\PY{c+c1}{\PYZsh{}così si crea la lista che varia dalla variabile numero, \PYZdq{}appendendo\PYZdq{} il numero scritto dall\PYZsq{}utente prima alla lista vera e propria}
+\PY{n}{mediadeinumeri}\PY{o}{=}\PY{n+nb}{sum}\PY{p}{(}\PY{n}{numeri}\PY{p}{)}\PY{o}{/}\PY{n+nb}{len}\PY{p}{(}\PY{n}{numeri}\PY{p}{)}\PY{c+c1}{\PYZsh{}sum=somma mentre len=lunghezza}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{La media di tutti i numeri inseriti è:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{mediadeinumeri}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questo programma puoi calcolare la media di una lista di numeri
+che desideri sapere
+Quanti numeri desideri inserire in totale? 5
+Inserisci il numero di cui desideri fare la media: 12
+Inserisci il numero di cui desideri fare la media: 33
+Inserisci il numero di cui desideri fare la media: 57
+Inserisci il numero di cui desideri fare la media: 127
+Inserisci il numero di cui desideri fare la media: 73
+La media di tutti i numeri inseriti è: 60.4
+    \end{Verbatim}
+
+    \section{CALCOLARE IL QUADRATO DEI
+NUMERI}\label{calcolare-il-quadrato-dei-numeri}
+
+    Il programma consente all'utente di calcolare il quadrato di un numero
+specificato sempre dall'utente. Il quadrato di un numero è ottenuto
+moltiplicando il numero per se stesso, per l'appunto facendo la potenza
+alla seconda del numero in questione. Inizialmente, il programma
+richiede all'utente di inserire come input un numero intero (variabile
+n) di cui desidera calcolare il suo quadrato. Successivamente,
+attraverso un ciclo for, il programma itera attraverso i numeri da 1 a n
+inclusi. Per ogni numero da 1 a n, il ciclo for calcola il quadrato
+utilizzando l'operatore di potenza ** e poi stampa il risultato dopo una
+stringa di testo esplicativa. Il risultato finale di output è una lista
+di quadrati dei primi n numeri, con ogni riga che mostra all'utente il
+numero originale e il suo quadrato corrispondente. Questo codice
+fornisce un modo semplice per calcolare il quadrato di un numero.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere come eseguire le potenze facendo il quadrato dei numeri}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questo programma puoi calcolare il quadrato di un numero che desideri sapere}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{n}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quindi, inserisci il numero di cui desideri sapere il quadrato: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{I quadrati dei primi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{numeri sono: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{numero} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{quadratodelnumero}\PY{o}{=}\PY{n}{numero}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{c+c1}{\PYZsh{}il simbolo di potenza si fa con il doppio **}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il quadrato di}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{numero}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{è}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{quadratodelnumero}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questo programma puoi calcolare il quadrato di un numero che
+desideri sapere
+Quindi, inserisci il numero di cui desideri sapere il quadrato: 12
+I quadrati dei primi 12 numeri sono:
+Il quadrato di 1 è 1
+Il quadrato di 2 è 4
+Il quadrato di 3 è 9
+Il quadrato di 4 è 16
+Il quadrato di 5 è 25
+Il quadrato di 6 è 36
+Il quadrato di 7 è 49
+Il quadrato di 8 è 64
+Il quadrato di 9 è 81
+Il quadrato di 10 è 100
+Il quadrato di 11 è 121
+Il quadrato di 12 è 144
+    \end{Verbatim}
+
+    \section{LA VERIFICA DI PARITÀ O DISPARITÀ DI UN
+NUMERO}\label{la-verifica-di-parituxe0-o-disparituxe0-di-un-numero}
+
+    Il programma consente all'utente di verificare se un numero inserito
+come input è pari o dispari. Inizialmente, chiede all'utente di inserire
+un numero intero come input della variabile numero. Successivamente,
+utilizza l'operatore modulo ``\%'' (simbolo di percentuale) per
+verificare se il numero è divisibile per 2 o meno. Se il resto della
+divisione di numero per 2 è uguale a 0, il programma stampa che il
+numero è pari. In caso contrario, se il resto è diverso da 0, il
+programma stampa che il numero è dispari. L'operatore modulo restituisce
+il resto della divisione tra i due operandi, cioè in questo caso il
+numero definito dall'utente e il 2. Nello specifico nella condizione
+``if numero\%2==0:'', il programma verifica se il numero è divisibile
+per 2 (cioè se il resto è 0), il che indica che il numero è pari. L'else
+ovviamente, se il programma si trova nella altra condizione, stampa che
+è dispari. Questo codice fornisce una semplice verifica della parità o
+disparità di un numero.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere l\PYZsq{}utillizo del simbolo di \PYZpc{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questo programma puoi verificare se un numero è pari o dispari}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numero}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quindi, inserisci il numero che desideri verificare: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{k}{if} \PY{n}{numero}\PY{o}{\PYZpc{}}\PY{k}{2}==0:\PYZsh{}il simbolo di \PYZpc{} vuol dire se è divisibile o meno un numero, ==0 vuol dire se in quel caso è con il resto di 0
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il numero}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{numero}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{è un numero pari}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{else}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il numero}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{numero}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{è un numero dispari}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questo programma puoi verificare se un numero è pari o dispari
+Quindi, inserisci il numero che desideri verificare: 12
+Il numero 12 è un numero pari
+    \end{Verbatim}
+
+    \section{CALCOLARE IL FATTORIALE}\label{calcolare-il-fattoriale}
+
+    Il programma qui sotto consente all'utente di calcolare il fattoriale di
+un numero specificato dall'utente stesso. Il fattoriale di un numero è
+ottenuto moltiplicando tutti i numeri interi positivi fino a quel
+numero, il fattoriale di 5 ad esempio è calcolato moltiplicando tutti i
+numeri interi positivi da 1 a 5, cioè: 1 * 2 * 3 * 4 * 5, che è uguale a
+120. Inizialmente, il programma richiede all'utente come input di
+inserire un numero positivo (variabile n) di cui desidera calcolare il
+fattoriale. Successivamente, attraverso un ciclo for, il programma itera
+attraverso i numeri da 1 a n inclusi. Per ogni numero, il ciclo for
+moltiplica il valore corrente della variabile fattoriale per il numero
+stesso e riassegna il risultato alla variabile fattoriale. L'operatore
+\emph{= è un modo conciso e semplice per eseguire moltiplicazioni e
+riassegnare il risultato alla stessa variabile, praticamente fa due cose
+in uno: svolge la moltiplicazione e salva il risultato nella stessa
+variabile senza l'uso di due comandi separati. Ad esempio,
+fattoriale}=numero è equivalente a fattoriale=fattoriale*numero solo che
+per quest'ultimo il programma userà più memoria. Alla fine del ciclo,
+dopo una stringa esplicativa, il programma stampa il risultato che
+rappresenta il fattoriale del numero inserito all'inizio dall'utente.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere l\PYZsq{}utillizo del simbolo di *=}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, attraverso questo programma puoi calcolare il fattoriale di qualsiasi numero che desideri sapere}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{n}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quindi, inserisci il numero positivo che desideri calcolare: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{fattoriale}\PY{o}{=}\PY{l+m+mi}{1}
+\PY{k}{for} \PY{n}{numero} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{n}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{fattoriale}\PY{o}{*}\PY{o}{=}\PY{n}{numero}\PY{c+c1}{\PYZsh{}il simbolo *= svolge due compiti in uno: fa la moltiplicazione e riassegna il valore della variabile}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il fattoriale del numero}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{n}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{è}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{fattoriale}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, attraverso questo programma puoi calcolare il fattoriale di qualsiasi
+numero che desideri sapere
+Quindi, inserisci il numero positivo che desideri calcolare: 12
+Il fattoriale del numero 12 è 479001600
+    \end{Verbatim}
+
+    \section{IL GIOCO DELL'INDOVINELLO}\label{il-gioco-dellindovinello}
+
+    Il programma in questione è un semplice gioco in cui l'utente, o in
+questo caso il giocatore, deve indovinare un numero generato casualmente
+compreso tra 1 e 100. Inizialmente, il programma utilizza la libreria
+random per generare un numero segreto (salvato nella variabile
+numerodaindovinare) mediante la funzione randint(1, 100), che
+restituisce un numero intero casuale compreso tra 1 e 100 (inclusi).
+Successivamente, il programma inizia un ciclo ``while True'' che si
+ripeterà finché l'utente non indovina il numero segreto. Il ciclo
+``while True'' non è altro che un ciclo che dura fino all'``infinito'',
+cioè fino a quando l'utente non si sarà imbattuto nell'unica condizione
+del programma che attraverso il comando ``break'' riuscirà ad
+interrompere questo ciclo continuo e far così terminare il programma; se
+durante lo sviluppo del programma ci si dimentica di inserire questo
+comando il programma potrebbe realmente continuare ``per sempre'', anche
+se questo sarebbe scientificamente impossibile. Durante ogni iterazione
+del ciclo, il programma chiede all'utente di inserire un tentativo
+numerico (salvato nella variabile tentativo). Il programma tiene traccia
+del numero di tentativi effetuati con la variabile ``tentativi''. Se
+l'utente riesce ad indovinare il numero segreto, il programma stampa un
+messaggio di congratulazioni insieme al numero segreto stampato a
+schermo e al numero di tentativi effetuati, quindi a quel punto
+quest'ultimo esce dal ciclo con l'istruzione ``break''. Se il tentativo
+dell'utente è sbagliato, il programma fornisce un suggerimento sulla
+direzione corretta per aiutare il giocatore (in particolare il programma
+specifica se il numero è più grande o più piccolo, questo grazie a delle
+condizioni specifiche inserite nel programma).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere l\PYZsq{}utillizzo della libreria random}
+\PY{k+kn}{import} \PY{n+nn}{random}
+\PY{n}{numerodaindovinare}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{c+c1}{\PYZsh{}random.randint vuol dire che il numero da generare è compreso da 1 a 100 ed è intero perchè è int}
+\PY{n}{tentativi}\PY{o}{=}\PY{l+m+mi}{0}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, questo gioco prevede che tu indovini un numero compreso da 1 a 100}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{while} \PY{k+kc}{True}\PY{p}{:}
+    \PY{n}{tentativo}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Adesso inserisci il numero che ritieni sia quello giusto: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+    \PY{n}{tentativi} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+    \PY{k}{if} \PY{n}{tentativo}\PY{o}{==}\PY{n}{numerodaindovinare}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Complimenti! Sei riuscito a indovinare il numero incognito che è}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{numerodaindovinare}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{in}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{tentativi}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{tentativi}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{break}\PY{c+c1}{\PYZsh{}fa fermare \PYZdq{}improvvisamente\PYZdq{} il programma}
+    \PY{k}{elif} \PY{n}{tentativo}\PY{o}{\PYZlt{}}\PY{n}{numerodaindovinare}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più piccolo}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, questo gioco prevede che tu indovini un numero compreso da 1 a 100
+Adesso inserisci il numero che ritieni sia quello giusto: 10
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 90
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più piccolo
+Adesso inserisci il numero che ritieni sia quello giusto: 20
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 80
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più piccolo
+Adesso inserisci il numero che ritieni sia quello giusto: 30
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 70
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più piccolo
+Adesso inserisci il numero che ritieni sia quello giusto: 40
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 60
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 61
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 62
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 63
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 64
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 65
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 67
+Ci sei quasi, ti stai avvicinando! Ti do un consiglio: il numero è più grande
+Adesso inserisci il numero che ritieni sia quello giusto: 68
+Complimenti! Sei riuscito a indovinare il numero incognito che è 68 in 15
+tentativi
+    \end{Verbatim}
+
+    Qui sotto è presente un breve codice che mostra come generare un numero
+causale intero (int), questa parte di codice è anche presente nel codice
+soprastante ma ovviamente con variabili diverse.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere l\PYZsq{}utillizzo della libreria random per generare numeri casuali interi}
+\PY{k+kn}{import} \PY{n+nn}{random}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Un numero di esempio intero (int) generato casualmente da un range da 1 a 100 è: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numerointerocasuale}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{100}\PY{p}{)}\PY{c+c1}{\PYZsh{}random.randint vuol dire che il numero da generare è compreso da 1 a 100 ed è intero perchè è int}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{numerointerocasuale}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Un numero di esempio intero (int) generato casualmente da un range da 1 a 100 è:
+27
+    \end{Verbatim}
+
+    Invece qui sotto è presente il metodo per farlo con i numeri decimali
+(float).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Comprendere l\PYZsq{}utillizzo della libreria random per generare numeri casuali decimali}
+\PY{k+kn}{import} \PY{n+nn}{random}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Un numero di esempio decimale (float) generato casualmente da un range da 0,12 a 99,7 è: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{numerofloatcasuale}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{uniform}\PY{p}{(}\PY{l+m+mf}{0.12}\PY{p}{,} \PY{l+m+mf}{99.7}\PY{p}{)}\PY{c+c1}{\PYZsh{}random.uniform vuol dire che il numero da generare è compreso da 0,12 a 99,07 ed è decimale perchè è float}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{numerofloatcasuale}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Un numero di esempio decimale (float) generato casualmente da un range da 0,12 a
+99,7 è:
+86.19652177433156
+    \end{Verbatim}
+
+    \section{IL GIOCO DEL MORRA CINESE}\label{il-gioco-del-morra-cinese}
+
+    Nel codice del gioco della morra cinese, viene sfruttata la libreria
+random di Python per creare un gioco interattivo e coinvolgente.
+Inizialmente, il programma genera casualmente la scelta da parte del
+computer tra carta, forbici e sasso, consentendo così una migliore
+dinamicità e casualità nel gioco. Successivamente, l'utente viene
+coinvolto con un'interfaccia di input, in cui è richiesto di selezionare
+(cioè scrivere nella apposita casella di testo) la propria mossa
+preferita tra le opzioni disponibili: carta, forbici o sasso. Il
+programma fornisce poi all'utente la mossa scelta dal computer
+stampandola a schermo appena l'utente avrà scritto la sua mossa, creando
+così un'atmosfera di suspense. Le regole del gioco sono implementate
+attraverso delle condizioni logiche che confrontano le mosse dell'utente
+e del computer con delle scelte prefissate. Gli operatori logici and e
+or vengono utilizzati per definire le situazioni in cui l'utente può
+vincere, perdere o ottenere una parità contro il computer e vengono
+usate per poter specificare più cose contemporaneamente senza dover
+creare tantissime condizioni nel codice. Inoltre, il codice gestisce
+situazioni in cui l'utente inserisce una mossa non riconosciuta rispetto
+all'elenco delle opzioni scritte sopra, fornendo un messaggio di avviso
+e suggerendo di scegliere tra le opzioni valide riavviando però prima il
+programma. Un elemento interessante del codice è l'inclusione di un link
+esterno, in questo caso un link di Wikipedia, che invita l'utente a
+consultare ulteriori informazioni sul regolamento e le strategie del
+gioco della morra cinese. Complessivamente, il codice combina
+efficacemente l'input utente, logica condizionale e interazione dinamica
+per creare un'esperienza di gioco coinvolgente. Questo codice riprende
+quasi tutte le competenze raccolte finora in questa esercitazione.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Riassunto di tutte le competenze imparate finora in questa esercitazione + comprendere l\PYZsq{}utilizzo dei comandi not in, and e or}
+\PY{k+kn}{import} \PY{n+nn}{random}
+\PY{n}{mosse}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{carta}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{forbici}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{sasso}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{mossadelcomputer}\PY{o}{=}\PY{n}{random}\PY{o}{.}\PY{n}{choice}\PY{p}{(}\PY{n}{mosse}\PY{p}{)}\PY{c+c1}{\PYZsh{}random.choice vuol dire che il programma sceglierà casualmente un elemento tra quelli della lista o stringa}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ciao, questo gioco è la morra cinese quindi devi provare ad indovinare la mossa giusta e battere il computer che è l}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{avversario}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Puoi trovare tutto il regolamento e le strategie del gioco a questo link: https://it.wikipedia.org/wiki/Morra\PYZus{}cinese}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sceltadelgiocatore}\PY{o}{=}\PY{n+nb}{input}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Quindi adesso scegli la tua mossa scrivendo una delle seguenti opzioni: carta, forbice o sasso: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{if} \PY{n}{sceltadelgiocatore} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{mosse}\PY{p}{:}\PY{c+c1}{\PYZsh{}il comando not in viene utilizzato per verificare se un elemento NON è presente in una lista o stringa}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mossa non riconosciuta. Scegli una delle seguenti mosse riavviando prima il programma: carta, forbice o sasso}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Impossibile perciò decretare un vincitore}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{else}\PY{p}{:}\PY{c+c1}{\PYZsh{}all\PYZsq{}interno di un else, o in una qualsiasi altra condizione, ci possono essere altre condizioni che si possono verificare, con altre condizioni a loro volta all\PYZsq{}interno e così via dicendo}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Il computer ha scelto la seguente mossa:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{mossadelcomputer}\PY{p}{)}
+    \PY{k}{if} \PY{n}{sceltadelgiocatore}\PY{o}{==}\PY{n}{mossadelcomputer}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Parità!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{elif} \PY{p}{(}\PY{n}{sceltadelgiocatore}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{carta}\PY{l+s+s2}{\PYZdq{}} \PY{o+ow}{and} \PY{n}{mossadelcomputer}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{sasso}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o+ow}{or}\PY{p}{(}\PY{n}{sceltadelgiocatore}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{forbici}\PY{l+s+s2}{\PYZdq{}} \PY{o+ow}{and} \PY{n}{mossadelcomputer}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{carta}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o+ow}{or}\PY{p}{(}\PY{n}{sceltadelgiocatore}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{sasso}\PY{l+s+s2}{\PYZdq{}} \PY{o+ow}{and} \PY{n}{mossadelcomputer}\PY{o}{==}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{forbici}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}\PY{c+c1}{\PYZsh{}l\PYZsq{}and serve a comparare più cose contemporaneamente mentre l\PYZsq{}or funge come un oppure}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Complimenti! Hai vinto!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Peccato! Hai perso!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Ciao, questo gioco è la morra cinese quindi devi provare ad indovinare la mossa
+giusta e battere il computer che è l'avversario
+Puoi trovare tutto il regolamento e le strategie del gioco a questo link:
+https://it.wikipedia.org/wiki/Morra\_cinese
+Quindi adesso scegli la tua mossa scrivendo una delle seguenti opzioni: carta,
+forbice o sasso: forbici
+Il computer ha scelto la seguente mossa: carta
+Complimenti! Hai vinto!
+    \end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
